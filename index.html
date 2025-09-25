@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja"
+<html lang="ja">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,7 +47,7 @@
 <body>
 
   <div id="ui">
-    <span id="time">残り時間: 20</span>
+    <span id="time">残り時間: 60</span>
     <span id="score">スコア: 0</span>
   </div>
 
@@ -78,7 +78,7 @@
 
 <script>
   let score = 0;
-  let timeLeft = 20;
+  let timeLeft = 60;
   let gameRunning = true;
   const holes = Array.from({ length: 9 }, (_, i) => document.getElementById('hole' + i));
   let lastUsedHoles = new Set();
