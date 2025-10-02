@@ -47,13 +47,13 @@
 <body>
 
   <div id="ui">
-    <span id="time">残り時間: 60</span>
-    <span id="score">スコア: 0</span>
+    <span id="time">time: 60</span>
+    <span id="score">scre: 0</span>
   </div>
 
   <div id="gameover">
-    <div id="finalScore">スコア: 0</div>
-    <button id="restartBtn">もう一度プレイ</button>
+    <div id="finalScore">score: 0</div>
+    <button id="restartBtn">replay</button>
   </div>
 
   <a-scene cursor="rayOrigin: mouse" vr-mode-ui="enabled: true">
@@ -182,7 +182,7 @@
     gameRunning = false;
     finalScoreEl.textContent = 'スコア: ' + score;
     gameoverEl.style.display = 'block';
-    // ゲーム終了時に全てのモグラを削除し、activeMolesをクリア
+    // ゲーム終了時に全てのモグラを削除して、、activeMolesをクリア
     activeMoles.forEach(mole => {
       if (mole.parentNode) mole.parentNode.removeChild(mole);
     });
