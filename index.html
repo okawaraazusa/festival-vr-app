@@ -46,15 +46,7 @@
 </head>
 <body>
 
-  <div id="ui">
-    <span id="time">time: 60</span>
-    <span id="score">scre: 0</span>
-  </div>
-
-  <div id="gameover">
-    <div id="finalScore">score: 0</div>
-    <button id="restartBtn">replay</button>
-  </div>
+  
 
   <a-scene cursor="rayOrigin: mouse" vr-mode-ui="enabled: true">
     <a-sky color="#88c0d0"></a-sky>
@@ -72,7 +64,22 @@
     <a-cylinder id="hole7" position="0 0.01 2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
     <a-cylinder id="hole8" position="2 0.01 2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
 
-    <a-camera position="0 1.6 4" look-controls></a-camera>
+    <a-camera position="0 1.6 4" look-controls>
+      <!-- VR内UI (スコア・時間) -->
+      <a-entity position="0 0.7 -1.5">
+        <a-text id="time" value="Remaining time: 20" color="black" width="3" align="center" position="-1 0 0"></a-text>
+        <a-text id="score" value="score: 0" color="black" width="3" align="center" position="1 0 0"></a-text>
+      </a-entity>
+      <!-- ゲームオーバー画面 -->
+      <a-entity id="gameover" position="0 0 -2" visible="false">
+        <a-plane width="2.5" height="1.5" color="black" opacity="0.7" position="0 0 0"></a-plane>
+        <a-text id="finalScore" value="score: 0" color="white" width="3" align="center" position="0 0.3 0"></a-text>
+        <!-- 再プレイボタン -->
+        <a-plane id="restartBtn" width="1.5" height="0.5" color="white" position="0 -0.4 0" class="clickable">
+          <a-text value="replay" color="white" align="center" width="2" position="0 0 0.01"></a-text>
+        </a-plane>
+      </a-entity>
+    </a-camera>
     <a-entity cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
   </a-scene>
 
@@ -174,14 +181,14 @@
 
   function updateTimer() {
     timeLeft--;
-    timeEl.textContent = '残り時間: ' + timeLeft;
+    timeEl.setAttribute('value', 'Remaining time: ' + timeLeft);
     if (timeLeft <= 0) endGame();
   }
 
   function endGame() {
     gameRunning = false;
-    finalScoreEl.textContent = 'スコア: ' + score;
-    gameoverEl.style.display = 'block';
+    finalScoreEl.setAttribute('value', 'score: ' + score);
+    gameoverEl.setAttribute('visible', true);
     // ゲーム終了時に全てのモグラを削除して、、activeMolesをクリア
     activeMoles.forEach(mole => {
       if (mole.parentNode) mole.parentNode.removeChild(mole);
