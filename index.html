@@ -126,10 +126,10 @@
       const pointValue = isRare ? 5 : 3;
       const delay = Math.random() * 400;
 
-      const mole = document.createElement('a-box');
-      mole.setAttribute('depth', '0.6');
+      const mole = document.createElement('a-cylinder');
+      mole.setAttribute('gltf-model', 'mogura.glb');
+      mole.setAttribute('radius', '0.3');
       mole.setAttribute('height', '0.6');
-      mole.setAttribute('width', '0.6');
       mole.setAttribute('position', `${pos.x} -0.6 ${pos.z}`);
       mole.setAttribute('color', color);
       mole.setAttribute('class', 'clickable'); 
