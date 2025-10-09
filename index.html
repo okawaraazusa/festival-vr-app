@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja"
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,10 +42,20 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    
   </style>
 </head>
 <body>
+
+  <div id="ui">
+    <span id="time">残り時間: 20</span>
+    <span id="score">スコア: 0</span>
+  </div>
+
+  <div id="gameover">
+    <div id="finalScore">スコア: 0</div>
+    <button id="restartBtn">もう一度プレイ</button>
+  </div>
+
   <a-scene cursor="rayOrigin: mouse" vr-mode-ui="enabled: true">
     <a-sky color="#88c0d0"></a-sky>
     <a-light type="ambient" color="#ccc"></a-light>
@@ -62,54 +72,25 @@
     <a-cylinder id="hole7" position="0 0.01 2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
     <a-cylinder id="hole8" position="2 0.01 2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
 
-    <a-camera position="0 3 8" look-controls></a-camera>
-
-    <a-entity id="hud" position="0 1.2 -3">
-        <a-entity id="time"
-                  text="value: Time Left: 60; color: white; align: center; width: 15"
-                  position="0 0.3 0"></a-entity>
-        <a-entity id="score"
-                  text="value: Score: 0; color: white; align: center; width: 15"
-                  position="0 -0.3 0"></a-entity>
-      </a-entity>
-    <!-- GameOver Panel -->
-    <a-entity id="gameover"
-              position="0 1.6 0"
-              visible="false">
-      <a-plane width="2.5" height="1.2" color="black" opacity="0.8" radius="0.1"></a-plane>
-      <a-entity id="finalScore"
-                text="value: Final Score: 0; color: white; align: center; width: 4"
-                position="0 0.2 0.01"></a-entity>
-      <a-plane id="restartBtn"
-              width="1.5" height="0.4" color="white"
-              position="0 -0.35 0.01"
-              class="clickable">
-        <a-entity text="value: Play Again; color: black; align: center; width: 3"
-                  position="0 0 0.01"></a-entity>
-      </a-plane>
-    </a-entity>
+    <a-camera position="0 1.6 4" look-controls></a-camera>
+    <a-entity cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable"></a-entity>
   </a-scene>
 
 <script>
   let score = 0;
-  let timeLeft = 60;
+  let timeLeft = 20;
   let gameRunning = true;
   const holes = Array.from({ length: 9 }, (_, i) => document.getElementById('hole' + i));
   let lastUsedHoles = new Set();
   // 現在出現中のモグラを穴のID
   const activeMoles = new Map();
 
-  const timeText = document.getElementById('time');
-  const scoreText = document.getElementById('score');
-  const finalScoreText = document.getElementById('finalScore');
-  const gameoverPanel = document.getElementById('gameover');
+  const timeEl = document.getElementById('time');
+  const scoreEl = document.getElementById('score');
+  const finalScoreEl = document.getElementById('finalScore');
+  const gameoverEl = document.getElementById('gameover');
   const restartBtn = document.getElementById('restartBtn');
   const scene = document.querySelector('a-scene');
-
-  function updateHUD() {
-    timeText.setAttribute('text', 'value', 'Time Left: ' + timeLeft);
-    scoreText.setAttribute('text', 'value', 'Score: ' + score);
-  }
 
   function spawnMoles() {
     if (!gameRunning) return;
@@ -145,10 +126,10 @@
       const pointValue = isRare ? 5 : 3;
       const delay = Math.random() * 400;
 
-      const mole = document.createElement('a-cylinder');
-      mole.setAttribute('gltf-model', 'mogura.glb');
-      mole.setAttribute('radius', '0.3');
+      const mole = document.createElement('a-box');
+      mole.setAttribute('depth', '0.6');
       mole.setAttribute('height', '0.6');
+      mole.setAttribute('width', '0.6');
       mole.setAttribute('position', `${pos.x} -0.6 ${pos.z}`);
       mole.setAttribute('color', color);
       mole.setAttribute('class', 'clickable'); 
@@ -174,7 +155,7 @@
 
         mole.dataset.clicked = 'true'; // クリック済み
         score += pointValue;
-        updateHUD();
+        scoreEl.textContent = 'スコア: ' + score;
         if (mole.parentNode) mole.parentNode.removeChild(mole);
         // クリックされたら activeMoles から削除
         activeMoles.delete(hole.id);
@@ -192,51 +173,42 @@
   }
 
   function updateTimer() {
-      if (timeLeft > 0) {
-      timeLeft--;
-      updateHUD();
-      if (timeLeft === 0) {
-        endGame();
-      }
-    }
+    timeLeft--;
+    timeEl.textContent = '残り時間: ' + timeLeft;
+    if (timeLeft <= 0) endGame();
   }
 
   function endGame() {
-    finalScore.setAttribute('text', 'value', 'Final Score: ' + score);
-    gameover.setAttribute('visible', 'true');
-    // ゲーム終了時に全てのモグラを削除して、、activeMolesをクリア
+    gameRunning = false;
+    finalScoreEl.textContent = 'スコア: ' + score;
+    gameoverEl.style.display = 'block';
+    // ゲーム終了時に全てのモグラを削除し、activeMolesをクリア
     activeMoles.forEach(mole => {
       if (mole.parentNode) mole.parentNode.removeChild(mole);
     });
     activeMoles.clear();
   }
 
-  restartBtn.addEventListener('click', () => {
-    score = 0;
-    timeLeft = 60;
-    gameRunning = true;
-    updateHUD();
-    gameover.setAttribute('visible', 'false');
-    spawnMoles();
-    startTimers();
-  });
+  restartBtn.addEventListener('click', () => location.reload());
 
- function startTimers() {
-    const moleTimer = setInterval(() => {
-      if (gameRunning) spawnMoles();
-      else clearInterval(moleTimer);
-    }, 1200);
-
-    const countdownTimer = setInterval(() => {
-      if (gameRunning) updateTimer();
-      else clearInterval(countdownTimer);
-    }, 1000);
-  }
-
-  // Start
-  updateHUD();
+  // ゲーム開始
   spawnMoles();
-  startTimers();
+  const moleTimer = setInterval(() => {
+    if (gameRunning) {
+      spawnMoles();
+    } else {
+      clearInterval(moleTimer);
+    }
+  }, 1200);
+
+  const countdownTimer = setInterval(() => {
+    if (gameRunning) {
+      updateTimer();
+    } else {
+      clearInterval(countdownTimer);
+    }
+  }, 1000);
+
 </script>
 
 </body>
