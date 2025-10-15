@@ -148,7 +148,7 @@
       mole.setAttribute('animation', `
         property: position;
         to: ${pos.x} 0.6 ${pos.z};
-        dur: 500;
+        dur: 1000;
         dir: alternate;
         loop: 1;
         delay: ${delay};
@@ -179,7 +179,7 @@
           mole.parentNode.removeChild(mole);
           activeMoles.delete(hole.id); // 時間切れで消えた場合も
         }
-      }, 1300 + delay);
+      }, 3000 + delay);
     });
   }
 
