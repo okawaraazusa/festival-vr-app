@@ -82,6 +82,16 @@
         <a-entity text="value: Play Again; color: black; align: center; width: 5" position="0 0 0.01"></a-entity>
       </a-plane>
     </a-entity>
+
+    <!-- Start Panel -->
+    <a-entity id="startPanel" position="0 1.6 -6" visible="true">
+      <a-plane width="4" height="3" color="black" opacity="0.8" radius="0.2"></a-plane>
+      <a-entity text="value: 3D Whack-a-Mole; color: yellow; align: center; width: 6" position="0 0.8 0.01"></a-entity>
+      <a-entity text="value: How to operate:\n・マウスまたはコントローラーでモグラを叩く\n・時間内にできるだけ多く叩こう！; color: white; align: center; width: 5" position="0 0.2 0.01"></a-entity>
+      <a-plane id="startBtn" width="2.5" height="0.8" color="white" position="0 -0.8 0.01" class="clickable">
+        <a-entity text="value: start; color: black; align: center; width: 5" position="0 0 0.01"></a-entity>
+      </a-plane>
+    </a-entity>
   </a-scene>
 
 <script>
@@ -96,7 +106,10 @@
   const finalScoreText = document.getElementById('finalScore');
   const gameoverPanel = document.getElementById('gameover');
   const restartBtn = document.getElementById('restartBtn');
-  const scene = document.querySelector('a-scene');
+  const startPanel = document.getElementById('startPanel');
+  const startBtn = document.getElementById('startBtn');
+  const hud = document.getElementById('hud');
+  // const scene = document.querySelector('a-scene');
 
   function updateHUD() {
     timeText.setAttribute('text', 'value', 'Time: ' + timeLeft + ' s');
@@ -199,6 +212,7 @@
     finalScore.setAttribute('text', 'value', 'Final Score: ' + score);
     gameover.setAttribute('visible', 'true');
     // ゲーム終了時に全てのモグラを削除して、、activeMolesをクリア
+    hud.setAttribute('visible', 'false');
     activeMoles.forEach(mole => {
       if (mole.parentNode) mole.parentNode.removeChild(mole);
     });
@@ -206,15 +220,30 @@
   }
 
   restartBtn.addEventListener('click', () => {
-    score = 0;
-    timeLeft = 60;
-    gameRunning = true;
-    updateHUD();
-    gameover.setAttribute('visible', 'false');
-    spawnMoles();
-    startTimers();
+    resetGame();//
+    gameoverPanel.setAttribute('visible', 'false');
+    startGame();
   });
 
+  startBtn.addEventListener('click', () => {
+    startPanel.setAttribute('visible', 'false');
+    startGame();
+  });
+
+  function resetGame() {
+    score = 0;
+    timeLeft = 60;
+    updateHUD();
+  }
+
+  function startGame() {
+    gameRunning = true;
+    hud.setAttribute('visible', 'true');
+    resetGame();
+    updateHUD();
+    startTimers();
+  }
+  
  function startTimers() {
     const moleTimer = setInterval(() => {
       if (gameRunning) spawnMoles();
