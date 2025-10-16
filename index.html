@@ -57,7 +57,6 @@
   　<a-entity id="stage" position="0 0 -5">
        <!-- <a-plane position="0 0 0" rotation="-90 0 0" width="6" height="6" color="#3d9970"></a-plane> -->
       <a-box position="0 -0.5 0" width="6" height="1" depth="6" color="#3d9970"></a-box>
-  
       <a-cylinder id="hole0" position="-2 0.01 -2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
       <a-cylinder id="hole1" position="0 0.01 -2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
       <a-cylinder id="hole2" position="2 0.01 -2" radius="0.4" height="0.02" color="#4b382a"></a-cylinder>
@@ -91,9 +90,7 @@
   let gameRunning = true;
   const holes = Array.from({ length: 9 }, (_, i) => document.getElementById('hole' + i));
   let lastUsedHoles = new Set();
-  // 現在出現中のモグラを穴のID
   const activeMoles = new Map();
-
   const timeText = document.getElementById('time');
   const scoreText = document.getElementById('score');
   const finalScoreText = document.getElementById('finalScore');
