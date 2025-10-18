@@ -86,13 +86,13 @@
   const hud = document.getElementById('hud');
 
   // ✅ レイキャスター設定（クリック対象を登録）
-  document.querySelector('a-scene').addEventListener('loaded', () => {
-    const cameraEl = document.querySelector('a-camera');
-    if (cameraEl) {
-      cameraEl.setAttribute('cursor', 'rayOrigin: mouse; fuse: false');
-      cameraEl.setAttribute('raycaster', 'objects: .clickable');
-    }
-  });
+  // document.querySelector('a-scene').addEventListener('loaded', () => {
+  //   const cameraEl = document.querySelector('a-camera');
+  //   if (cameraEl) {
+  //     cameraEl.setAttribute('cursor', 'rayOrigin: mouse; fuse: false');
+  //     cameraEl.setAttribute('raycaster', 'objects: .clickable');
+  //   }
+  // });
 
   function updateHUD() {
     timeText.setAttribute('text', 'value', 'Time: ' + timeLeft + ' s');
